@@ -1,4 +1,4 @@
-import fs from 'fs';
+const fs = require('fs');
 
 /** 
  * Lê um arquivo JSON e transforma-o em objeto. Referência para criação da função: http://bit.ly/rwJSONfile
@@ -25,5 +25,11 @@ function jsonWriter(newFilePath, jsonObj) {
         return 1;
     } catch (e) {
         return 0;
+    }
+}
+
+function fixDataNames(data) {
+    for (const i in data) {
+        data[i].name = data[i].name.replace(/æ/g, 'a').replace(/¢/g, 'c').replace(/ø/g, 'o').replace(/ß/g, 'b');
     }
 }
