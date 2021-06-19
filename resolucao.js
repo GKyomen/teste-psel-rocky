@@ -49,3 +49,15 @@ function fixDataPrices(data) {
         }
     }
 }
+
+/**
+ * Recebe o JSON do banco de dados corrompido e corrige os produtos que não estavam em estoque, que estão sem a quantidade marcada
+ * @param {JSON} data JSON com o atributo quantidadade faltando
+ */
+function fixDataQuantity(data) {
+    for (const i in data) {
+        if (!data[i].hasOwnProperty('quantity')) {
+            data[i].quantity = 0;
+        }
+    }
+}
