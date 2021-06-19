@@ -28,8 +28,24 @@ function jsonWriter(newFilePath, jsonObj) {
     }
 }
 
+/**
+ * Recebe o JSON do banco de dados corrompido e corrige o nome dos produtos, que estão com caracteres errados
+ * @param {JSON} data JSON com os nomes corrompidos
+ */
 function fixDataNames(data) {
     for (const i in data) {
         data[i].name = data[i].name.replace(/æ/g, 'a').replace(/¢/g, 'c').replace(/ø/g, 'o').replace(/ß/g, 'b');
+    }
+}
+
+/**
+ * Recebe o JSON do banco de dados corrompido e corrige o preço dos produtos, que estão com o tipo de dado errado
+ * @param {JSON} data JSON com os preços corrompidos
+ */
+function fixDataPrices(data) {
+    for (const i in data) {
+        if (typeof (data[i].price) == 'string') {
+            data[i].price = parseFloat(data[i].price);
+        }
     }
 }
