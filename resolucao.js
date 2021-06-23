@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+/* FUNÇÕES DA QUESTÃO 1 */
+
 /** 
  * Lê um arquivo JSON e transforma-o em objeto. Referência para criação da função: http://bit.ly/rwJSONfile
  * @param {string} filePath caminho do arquivo a ser lido 
@@ -61,3 +63,55 @@ function fixDataQuantity(data) {
         }
     }
 }
+
+/* FUNÇÕES DA QUESTÃO 2 */
+
+/**
+ * Ordena os objetos do JSON do banco de dados já corrigido de acordo com sua categoria, desempatando pelo ID do produto. Imprime o nome dos produtos ao fim da ordenação
+ * @param {JSON} data JSON do banco de dados com dados corrigidos
+ */
+function sortAndPrintData(data) {
+    //compara um objeto com o próximo pela categoria em caixa alta (evitando erros), colocando em ordem alfabética. Repete para todos os objetos
+    data.sort(function(a, b) {
+        a = a.category.toUpperCase();
+        b = b.category.toUpperCase();
+        return (a > b) ? 1 : (a < b) ? -1 : 0;
+    });
+
+    //compara um objeto com o próximo, colocando produtos de mesma categoria em ordem crescente de ID's. Repete para todos os objetos
+    data.sort(function(a, b) {
+        if(a.category == b.category) {
+            return a.id - b.id;
+        }
+    });
+
+    //imprime os nomes dos produtos após ambas as ordenações
+    for(i in data) {
+        console.log(data[i].name);
+    }
+}
+
+/**
+ * Calcula o valor total de uma categoria somando os preços dos produtos da mesma.
+ * @param {JSON} data JSON do banco de dados com dados corrigidos e ordenados por categoria
+ * @returns vetor em que cada posição contém o valor total de uma categoria diferente de produtos
+ */
+function stockValueByCategory(data) {
+    let catValues = [], catIndex = -1;
+
+    for(i in data) {
+        if((i > 0 && data[i].category != data[i - 1].category) || (i == 0)) {
+            catIndex++;
+            catValues.push({
+                'category': data[i].category,
+                'quantity': 0
+            });
+        }
+
+        catValues[catIndex].quantity += data[i].quantity;
+    }
+
+    return catValues;
+}
+
+/* PROGRAMA PRINCIPAL */
