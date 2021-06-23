@@ -92,26 +92,52 @@ function sortAndPrintData(data) {
 }
 
 /**
- * Calcula o valor total de uma categoria somando os preços dos produtos da mesma.
+ * Calcula a quantidade total de uma categoria somando as quantidades dos produtos da mesma.
  * @param {JSON} data JSON do banco de dados com dados corrigidos e ordenados por categoria
- * @returns vetor em que cada posição contém o valor total de uma categoria diferente de produtos
+ * @returns vetor em que cada posição contém a quantidade total de produtos de uma categoria diferente de produtos
  */
-function stockValueByCategory(data) {
-    let catValues = [], catIndex = -1;
+function stockQuantityByCategory(data) {
+    let catQuantities = [], catIndex = -1;
 
     for(i in data) {
+        //como as categorias estão ordenadas, basta comparar a categoria do objeto atual com a do anterior.
         if((i > 0 && data[i].category != data[i - 1].category) || (i == 0)) {
+            //se a categoria for diferente ou se for o primeiro produto da lista, inclui um novo item no vetor de valores de categoria
             catIndex++;
-            catValues.push({
+            catQuantities.push({
                 'category': data[i].category,
                 'quantity': 0
             });
         }
 
-        catValues[catIndex].quantity += data[i].quantity;
+        //soma na quantidade total de produtos da categoria atual a quantidade do produto atual
+        catQuantities[catIndex].quantity += data[i].quantity;
     }
 
-    return catValues;
+    return catQuantities;
 }
 
 /* PROGRAMA PRINCIPAL */
+
+const brokenDBPath = 'broken-database.json';
+const fixedDBPath = 'saida.json';
+
+//leitura do banco de dados corrompido
+let brokenJSON = jsonReader(brokenDBPath);
+
+//correção e exportação dos dados para um banco de dados corrigido em caso de leitura bem sucedida
+if(brokenJSON != 0) {
+    fixDataNames(brokenJSON);
+    fixDataPrices(brokenJSON);
+    fixDataQuantity(brokenJSON);
+    jsonWriter(fixedDBPath, brokenJSON);
+}
+
+//leitura do banco de dados corrigido (nessa etapa, a variável 'brokenJSON' já foi corrigida, mas ler o arquivo gerado garante que a função de exportação está correta)
+let fixedJSON = jsonReader(fixedDBPath);
+
+//verificação dos dados corrigidos em caso de leitura bem sucedida
+if(fixedJSON != 0) {
+    sortAndPrintData(fixedJSON);
+    console.log(JSON.stringify(fixedJSON, null, 2));
+}
