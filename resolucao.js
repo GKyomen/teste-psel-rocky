@@ -139,5 +139,5 @@ let fixedJSON = jsonReader(fixedDBPath);
 //verificação dos dados corrigidos em caso de leitura bem sucedida
 if(fixedJSON != 0) {
     sortAndPrintData(fixedJSON);
-    console.log(JSON.stringify(fixedJSON, null, 2));
+    console.log(stockQuantityByCategory(fixedJSON));
 }
